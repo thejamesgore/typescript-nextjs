@@ -3,13 +3,27 @@ import PortableText from 'react-portable-text'
 import { sanityClient, urlFor } from '../../sanity'
 import Header from '../../components/Header'
 import { Post } from "../../typings"
+import { useForm, SubmitHandler } from "react-hook-form"
 
+interface IFormInput {
+    _id: string;
+    name: string;
+    email: string;
+    comment: string;
+}
 
 interface Props {
     post: Post
 }
 
 function Post( {post}: Props ) {
+
+    const { register, handleSubmit, formState: { errors }, } = useForm()
+
+    const onSubmit: SubmitHandler<IFormInput> = async(data) => {
+        console.log(data)
+    }
+
     return (
     <main>
         <Header />
@@ -56,6 +70,54 @@ function Post( {post}: Props ) {
 
         </article>
 
+        <hr className="max-w-lg my-5 mx-auto border border-yellow-500" />
+
+        <form className="flex flex-col p-5 max-w-2xl mx-auto mb-10">
+            <h3 className="text-sm text-yellow-500">Enjoyed this article?</h3>
+            <h4 className="text-3xl font-bold">Leave a comment below!</h4>
+            <hr className="py-3 mt-2" />
+
+            <input
+                {...register("_id")}
+                type="hidden"
+                name="_id"
+                value={post._id}
+                />
+
+            <label className="block mb-5">
+                <span className="text-gray-700">Name</span>
+                <input
+                {...register("name", {required: true})}
+                className="shadow border rounded py-2 px-3 form-input mt-1 block w-full ring-yellow-500" placeholder="Name" type="text" />
+            </label>
+            <label className="block mb-5">
+                <span className="text-gray-700">Email</span>
+                <input 
+                 {...register("email", {required: true})}
+                className="shadow border rounded py-2 px-3 form-input mt-1 block w-full ring-yellow-500" placeholder="email" type="text" />
+            </label>
+            <label className="block mb-5">
+                <span className="text-gray-700">Comment</span>
+                <textarea
+                {...register("comment", {required: true})}
+                className="shadow border rounded py-2 px-3 form-textarea mt-1 block w-full ring-yellow-500 outline-none focus:ring" placeholder="Name" rows={8} />
+            </label>
+
+        <div className="flex flex-col p-5">
+            {errors.name && (
+                <span className="text-red-500">- The name Field is requried</span>
+            )}
+            {errors.email && (
+                <span className="text-red-500">- The email Field is requried</span>
+            )}
+            {errors.comment && (
+                <span className="text-red-500">- The comment Field is requried</span>
+            )}
+        </div>
+
+          <input onSubmit={handleSubmit(onSubmit)} className="shadow bg-yellow-500 hover:bg-yellow-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded cursor-pointer" type="submit"></input>
+
+        </form>
     </main>
     )
 }
