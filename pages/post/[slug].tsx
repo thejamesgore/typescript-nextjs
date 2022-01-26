@@ -20,9 +20,17 @@ function Post( {post}: Props ) {
 
     const { register, handleSubmit, formState: { errors }, } = useForm()
 
-    const onSubmit: SubmitHandler<IFormInput> = async(data) => {
+    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+        fetch('/api/createComment', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            
+    }) .then(() => {
         console.log(data)
-    }
+    }) .catch(() => {
+        console.log(err)
+    })
+}
 
     return (
     <main>
@@ -72,7 +80,7 @@ function Post( {post}: Props ) {
 
         <hr className="max-w-lg my-5 mx-auto border border-yellow-500" />
 
-        <form className="flex flex-col p-5 max-w-2xl mx-auto mb-10">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col p-5 max-w-2xl mx-auto mb-10">
             <h3 className="text-sm text-yellow-500">Enjoyed this article?</h3>
             <h4 className="text-3xl font-bold">Leave a comment below!</h4>
             <hr className="py-3 mt-2" />
@@ -105,17 +113,17 @@ function Post( {post}: Props ) {
 
         <div className="flex flex-col p-5">
             {errors.name && (
-                <span className="text-red-500">- The name Field is requried</span>
+                <span className="text-red-500">- The name field is requried</span>
             )}
             {errors.email && (
-                <span className="text-red-500">- The email Field is requried</span>
+                <span className="text-red-500">- The email field is requried</span>
             )}
             {errors.comment && (
-                <span className="text-red-500">- The comment Field is requried</span>
+                <span className="text-red-500">- The comment field is requried</span>
             )}
         </div>
 
-          <input onSubmit={handleSubmit(onSubmit)} className="shadow bg-yellow-500 hover:bg-yellow-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded cursor-pointer" type="submit"></input>
+          <input className="shadow bg-yellow-500 hover:bg-yellow-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded cursor-pointer" type="submit"></input>
 
         </form>
     </main>
